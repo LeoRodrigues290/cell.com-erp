@@ -13,6 +13,7 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.0.1",
     "@svgr/rollup": "8.1.0",
     "@tabler/icons-react": "^2.39.0",
     "aos": "^2.3.4",
