@@ -1,10 +1,10 @@
-import { RouterProvider } from "react-router";
+import { RouterProvider } from 'react-router-dom';
 import { Flowbite, ThemeModeScript } from 'flowbite-react';
 import customTheme from './utils/theme/custom-theme';
-import router from "./routes/Router";
+import router from './routes/Router';
 
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
     return (
