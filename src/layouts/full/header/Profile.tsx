@@ -30,26 +30,10 @@ const Profile = () => {
           className="px-3 py-3 flex items-center bg-hover group/link w-full gap-3 text-dark"
         >
           <Icon icon="solar:user-circle-outline" height={20} />
-          My Profile
-        </Dropdown.Item>
-        <Dropdown.Item
-          as={Link}
-          to="#"
-          className="px-3 py-3 flex items-center bg-hover group/link w-full gap-3 text-dark"
-        >
-          <Icon icon="solar:letter-linear" height={20} />
-          My Account
-        </Dropdown.Item>
-        <Dropdown.Item
-          as={Link}
-          to="#"
-          className="px-3 py-3 flex items-center bg-hover group/link w-full gap-3 text-dark"
-        >
-          <Icon icon="solar:checklist-linear" height={20} />
-          My Task
+          Meu Perfil
         </Dropdown.Item>
         <div className="p-3 pt-0">
-        <Button as={Link}  size={'sm'}  to="/auth/login" className="mt-2 border border-primary text-primary bg-transparent hover:bg-lightprimary outline-none focus:outline-none">Logout</Button>
+        <Button as={Link}  size={'sm'}  to="/auth/login" className="mt-2 border border-primary text-primary bg-transparent hover:bg-lightprimary outline-none focus:outline-none">Sair</Button>
         </div>
       </Dropdown>
     </div>
