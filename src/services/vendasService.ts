@@ -7,8 +7,9 @@ import {
     runTransaction,
     serverTimestamp,
 } from "firebase/firestore";
-import { db } from "src/firebase/config";
+import { db, auth } from "src/firebase/config";
 import { logActivity } from "src/services/activityLogService";
+import { getUserName } from "src/utils/userMap";
 
 // Coleção de vendas
 const col = collection(db, "vendas");
@@ -20,11 +21,12 @@ export const registrarVenda = async (dados: {
     cliente: string;
     telefone: string;
     quantidade: number;
-    vendido_por: string;
 }) => {
     const produtoRef = doc(db, "produtos", dados.produto_id);
     let vendaRef: any;
     let unitPrice = 0;
+    const vendedorId = auth.currentUser!.uid;
+    const vendedorNome = getUserName(vendedorId, auth.currentUser!.displayName || "Usuário");
 
     await runTransaction(db, async (transaction) => {
         const produtoDoc = await transaction.get(produtoRef);
@@ -47,7 +49,13 @@ export const registrarVenda = async (dados: {
 
         // registra a venda com total
         vendaRef = await addDoc(col, {
-            ...dados,
+            produto_id: dados.produto_id,
+            produto_nome: dados.produto_nome,
+            cliente: dados.cliente,
+            telefone: dados.telefone,
+            quantidade: dados.quantidade,
+            vendido_por: vendedorId,
+            vendido_nome: vendedorNome,
             valor_unitario: unitPrice,
             total: unitPrice * dados.quantidade,
             data_venda: serverTimestamp(),
@@ -57,9 +65,10 @@ export const registrarVenda = async (dados: {
     // log de atividade
     await logActivity(
         "venda_registrada",
-        `Venda de ${dados.quantidade}× "${dados.produto_nome}" ‒ total R$${(unitPrice * dados.quantidade).toFixed(2)}`,
+        `Venda de ${dados.quantidade}× "${dados.produto_nome}" realizada por ${vendedorNome} (total R$${(unitPrice * dados.quantidade).toFixed(2)})`,
         { produtoId: dados.produto_id, vendaId: vendaRef.id, total: unitPrice * dados.quantidade }
     );
+
     return vendaRef;
 };
 
