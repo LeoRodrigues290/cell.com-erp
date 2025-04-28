@@ -1,81 +1,54 @@
-import { Link } from "react-router";
+// src/views/dashboard/DailyActivity.tsx
+import { useEffect, useState } from "react";
+import { onTodayActivities } from "src/services/activityLogService";
+import { format } from "date-fns";
+import ptBR from "date-fns/locale/pt-BR";
 
-const DailyActivity = () => {
+const tipoCor: Record<string, string> = {
+  pedido_criado:     "bg-primary",
+  pedido_resolvido:  "bg-success",
+  pedido_cancelado:  "bg-error",
+  produto_criado:    "bg-info",
+  produto_editado:   "bg-warning",
+  produto_vendido:   "bg-secondary",
+  servico_criado:    "bg-indigo-500",
+  servico_editado:   "bg-indigo-300",
+  servico_finalizado:"bg-green-700",
+  venda_registrada:  "bg-pink-500",
+};
 
-  const ActivitySteps = [
-    {
-      Time: "09:46",
-      action: "Payment received from John Doe of $385.90",
-      color: "bg-primary",
-      line: "h-full w-px bg-border",
-    },
-    {
-      Time: "09:46",
-      action: "New sale recorded",
-      id: "#ML-3467",
-      color: "bg-warning",
-      line: "h-full w-px bg-border",
-    },
-    {
-      Time: "09:46",
-      action: "Payment was made of $64.95 to Michael",
-      color: "bg-warning",
-      line: "h-full w-px bg-border",
-    },
-    {
-      Time: "09:46",
-      action: "New sale recorded",
-      id: "#ML-3467",
-      color: "bg-secondary",
-      line: "h-full w-px bg-border",
-    },
-    {
-      Time: "09:46",
-      action: "Project meeting",
-      color: "bg-error",
-      line: "h-full w-px bg-border",
-    },
-    {
-      Time: "09:46",
-      action: "Payment received from John Doe of $385.90",
-      color: "bg-primary"
-    },
+export default function DailyActivity() {
+  const [atividades, setAtividades] = useState<any[]>([]);
 
-    
-  ];
+  useEffect(() => {
+    const unsub = onTodayActivities(setAtividades);
+    return () => unsub();
+  }, []);
+
   return (
-    <>
-      <div className="rounded-xl dark:shadow-dark-md shadow-md bg-white dark:bg-darkgray p-6 relative w-full break-words">
-        <h5 className="card-title mb-6">Daily activities</h5>
-
-        <div className="flex flex-col mt-2">
-          <ul>
-            {ActivitySteps.map((item, index) => {
-              return (
-                <li key={index}>
+      <div className="rounded-xl shadow-md bg-white p-6 w-full">
+        <h5 className="card-title mb-6">Atividades Diárias</h5>
+        <ul className="flex flex-col space-y-4">
+          {atividades.map((a) => {
+            const dt = (a.timestamp as any).toDate();
+            return (
+                <li key={a.id}>
                   <div className="flex gap-4 min-h-16">
-                    <div className="">
-                      <p>{item.Time}</p>
+                    <div>
+                      <p>{format(dt, "HH:mm", { locale: ptBR })}</p>
                     </div>
                     <div className="flex flex-col items-center">
-                      <div className={`rounded-full ${item.color} p-1.5 w-fit`}></div>
-                      <div className={`${item.line}`}></div>
+                      <div className={`rounded-full ${tipoCor[a.type] || "bg-gray-400"} p-1.5 w-fit`}></div>
+                      <div className="flex-1 w-px bg-border"></div>
                     </div>
-                    <div className="">
-                      <p className="text-dark text-start">{item.action}</p>
-                      <Link to="#" className="text-blue-700">
-                        {item.id}
-                      </Link>
+                    <div>
+                      <p className="text-dark">{a.description}</p>
                     </div>
                   </div>
                 </li>
-              )
-            })}
-          </ul>
-        </div>
+            );
+          })}
+        </ul>
       </div>
-    </>
   );
-};
-
-export default DailyActivity;
+}

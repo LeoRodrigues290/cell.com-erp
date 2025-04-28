@@ -1,3 +1,4 @@
+// src/services/pedidosService.ts
 import {
     collection,
     addDoc,
@@ -7,31 +8,51 @@ import {
     serverTimestamp,
 } from "firebase/firestore";
 import { db, auth } from "src/firebase/config";
+import { logActivity } from "src/services/activityLogService";
 
 const col = collection(db, "pedidos");
 
 export const onPedidosChange = (cb: (docs: any[]) => void) =>
-    onSnapshot(col, (snap) => cb(snap.docs.map((d) => ({ id: d.id, ...d.data() }))));
+    onSnapshot(col, snap => cb(snap.docs.map(d => ({ id: d.id, ...d.data() }))));
 
-export const addPedido = (descricao: string) =>
-    addDoc(col, {
+export const addPedido = async (descricao: string) => {
+    const ref = await addDoc(col, {
         descricao,
         criado_por: auth.currentUser!.uid,
         criado_nome: auth.currentUser!.displayName || "Usuário",
         status: "aberto",
         data_criacao: serverTimestamp(),
     });
+    await logActivity(
+        "pedido_criado",
+        `Pedido “${descricao}” criado.`,
+        { pedidoId: ref.id }
+    );
+    return ref;
+};
 
-export const resolverPedido = (id: string) =>
-    updateDoc(doc(db, "pedidos", id), {
+export const resolverPedido = async (id: string) => {
+    await updateDoc(doc(db, "pedidos", id), {
         status: "resolvido",
         resolvido_por: auth.currentUser!.uid,
         resolvido_nome: auth.currentUser!.displayName || "Usuário",
     });
+    await logActivity(
+        "pedido_resolvido",
+        `Pedido ${id} marcado como resolvido.`,
+        { pedidoId: id }
+    );
+};
 
-export const cancelarPedido = (id: string) =>
-    updateDoc(doc(db, "pedidos", id), {
+export const cancelarPedido = async (id: string) => {
+    await updateDoc(doc(db, "pedidos", id), {
         status: "cancelado",
         resolvido_por: auth.currentUser!.uid,
         resolvido_nome: auth.currentUser!.displayName || "Usuário",
     });
+    await logActivity(
+        "pedido_cancelado",
+        `Pedido ${id} cancelado.`,
+        { pedidoId: id }
+    );
+};

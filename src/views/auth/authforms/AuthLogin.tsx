@@ -35,7 +35,7 @@ const AuthLogin = () => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-4">
             <div className="mb-2 block">
-              <Label htmlFor="email" value="Email" />
+              <Label htmlFor="email" value="E-mail" />
             </div>
             <TextInput
                 id="email"
@@ -52,7 +52,7 @@ const AuthLogin = () => {
 
           <div className="mb-4">
             <div className="mb-2 block">
-              <Label htmlFor="password" value="Password" />
+              <Label htmlFor="password" value="Senha" />
             </div>
             <TextInput
                 id="password"
@@ -74,12 +74,9 @@ const AuthLogin = () => {
                   htmlFor="accept"
                   className="opacity-90 font-normal cursor-pointer"
               >
-                Remember this Device
+                Lembrar dispositivo
               </Label>
             </div>
-            <Link to="/" className="text-primary text-sm font-medium">
-              Forgot Password?
-            </Link>
           </div>
 
           <Button
