@@ -1,61 +1,117 @@
-interface ServicoListProps {
-    servicos: any[];
-    onEditar: (servico: any) => void;
-    onFinalizar: (servico: any) => void;
-}
+import { useState } from "react";
 
-export default function ServicoList({ servicos, onEditar, onFinalizar }: ServicoListProps) {
+export default function ServicoList({
+                                        servicos,
+                                        onNovo,
+                                        onEditar,
+                                        onDetalhes,
+                                        onFinalizar,
+                                    }: any) {
+    const [filtro, setFiltro] = useState("abertos_em_andamento");
+    const hoje = new Date();
+
+    const formatarData = (timestamp: any) => {
+        if (!timestamp) return "-";
+        const date = new Date(timestamp.seconds * 1000);
+        return date.toLocaleDateString("pt-BR");
+    };
+
+    const traduzirStatus = (status: string) => {
+        switch (status) {
+            case "aberto":
+                return "Aberto";
+            case "em_andamento":
+                return "Em Andamento";
+            case "finalizado":
+                return "Finalizado";
+            default:
+                return status;
+        }
+    };
+
+    const servicosFiltrados = servicos.filter((s: any) => {
+        if (filtro === "abertos_em_andamento") return s.status !== "finalizado";
+        return s.status === filtro;
+    });
+
+    // ⚠️ AVISOS: entrega hoje (compara YYYY/MM/DD local)
+    const avisos = servicosFiltrados.filter((s: any) => {
+        if (!s.data_entrega) return false;
+        const dt = s.data_entrega.toDate();
+        return (
+            dt.getFullYear() === hoje.getFullYear() &&
+            dt.getMonth() === hoje.getMonth() &&
+            dt.getDate() === hoje.getDate()
+        );
+    });
+
     return (
-        <div className="overflow-x-auto rounded-lg shadow bg-white p-4">
-            <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-100">
-                <tr>
-                    <th className="px-6 py-3">Título</th>
-                    <th className="px-6 py-3">Cliente</th>
-                    <th className="px-6 py-3">Telefone</th>
-                    <th className="px-6 py-3">Descrição</th>
-                    <th className="px-6 py-3">Valor</th>
-                    <th className="px-6 py-3">Custo Materiais</th>
-                    <th className="px-6 py-3">Data Entrada</th>
-                    <th className="px-6 py-3">Data Entrega</th>
-                    <th className="px-6 py-3">Status</th>
-                    <th className="px-6 py-3">Criado Por</th>
-                    <th className="px-6 py-3"></th>
-                </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                {servicos.map(servico => (
-                    <tr key={servico.id}>
-                        <td className="px-6 py-4">{servico.titulo}</td>
-                        <td className="px-6 py-4">{servico.nome_cliente}</td>
-                        <td className="px-6 py-4">{servico.telefone_cliente}</td>
-                        <td className="px-6 py-4">{servico.descricao}</td>
-                        <td className="px-6 py-4">R$ {servico.valor}</td>
-                        <td className="px-6 py-4">R$ {servico.custo_materiais}</td>
-                        <td className="px-6 py-4">{servico.data_entrada?.toDate().toLocaleDateString()}</td>
-                        <td className="px-6 py-4">{servico.data_entrega?.toDate().toLocaleDateString() || "-"}</td>
-                        <td className="px-6 py-4">{servico.status}</td>
-                        <td className="px-6 py-4">{servico.criado_nome}</td>
-                        <td className="px-6 py-4 flex gap-2">
-                            <button
-                                className="bg-yellow-400 text-white px-2 py-1 rounded"
-                                onClick={() => onEditar(servico)}
-                            >
-                                ✏️
-                            </button>
-                            {servico.status !== "finalizado" && (
-                                <button
-                                    className="bg-green-500 text-white px-2 py-1 rounded"
-                                    onClick={() => onFinalizar(servico)}
-                                >
-                                    Finalizar
-                                </button>
-                            )}
-                        </td>
+        <>
+            <div className="flex justify-between items-center mb-4">
+                <h1 className="text-2xl font-bold">Serviços</h1>
+                <div className="flex gap-4">
+                    <button
+                        onClick={onNovo}
+                        className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+                    >
+                        Novo Serviço
+                    </button>
+                    <select
+                        className="border rounded p-2"
+                        value={filtro}
+                        onChange={e => setFiltro(e.target.value)}
+                    >
+                        <option value="abertos_em_andamento">Abertos / Em andamento</option>
+                        <option value="aberto">Abertos</option>
+                        <option value="em_andamento">Em andamento</option>
+                        <option value="finalizado">Finalizados</option>
+                    </select>
+                </div>
+            </div>
+
+            {avisos.length > 0 && (
+                <div className="bg-orange-100 border-l-4 border-orange-500 text-orange-700 p-4 rounded mb-4">
+                    {avisos.map((s: any) => (
+                        <p key={s.id}>
+                            ⚠️ Atenção: a data de entrega do serviço <strong>{s.titulo}</strong> é
+                            hoje! Finalize assim que possível.
+                        </p>
+                    ))}
+                </div>
+            )}
+
+            <div className="bg-white p-4 rounded shadow-md overflow-x-auto">
+                <table className="min-w-full text-sm text-gray-700">
+                    <thead className="bg-gray-100">
+                    <tr>
+                        <th className="py-2 px-4 text-left w-[30%]">Título</th>
+                        <th className="py-2 px-4 text-left">Cliente</th>
+                        <th className="py-2 px-4 text-left">Valor</th>
+                        <th className="py-2 px-4 text-left">Data Entrada</th>
+                        <th className="py-2 px-4 text-left">Status</th>
+                        <th className="py-2 px-4 text-center">Ações</th>
                     </tr>
-                ))}
-                </tbody>
-            </table>
-        </div>
+                    </thead>
+                    <tbody>
+                    {servicosFiltrados.map((s: any) => (
+                        <tr key={s.id} className="border-b">
+                            <td className="py-2 px-4">{s.titulo}</td>
+                            <td className="py-2 px-4">{s.nome_cliente}</td>
+                            <td className="py-2 px-4">R$ {s.valor}</td>
+                            <td className="py-2 px-4">{formatarData(s.data_entrada)}</td>
+                            <td className="py-2 px-4">{traduzirStatus(s.status)}</td>
+                            <td className="py-2 px-4 flex justify-center gap-2">
+                                <button onClick={() => onDetalhes(s)}>👁</button>
+                                <button onClick={() => onEditar(s)}>✏️</button>
+                                {s.status !== "finalizado" && (
+                                    <button onClick={() => onFinalizar(s)}>✔️</button>
+                                )}
+                            </td>
+                        </tr>
+                    ))}
+                    </tbody>
+                </table>
+            </div>
+        </>
     );
 }

@@ -31,28 +31,6 @@ const Dashboard = () => {
       <div className="col-span-12">
         <BlogCards />
       </div>
-      <div className="flex justify-center align-middle gap-2 flex-wrap col-span-12 text-center">
-        <p className="text-base">
-          Design and Developed by{' '}
-          <Link
-            to="https://adminmart.com/"
-            target="_blank"
-            className="pl-1 text-primary underline decoration-primary"
-          >
-            adminmart.com
-          </Link>
-        </p>
-        <p className="text-base">
-          Distributed by
-          <Link
-            to="https://themewagon.com/"
-            target="_blank"
-            className="pl-1 text-primary underline decoration-primary"
-          >
-            ThemeWagon
-          </Link>
-        </p>
-      </div>
     </div>
   );
 };

@@ -1,57 +1,68 @@
+// src/views/pedidos/index.tsx
 import { useState } from "react";
 import { usePedidos } from "src/hooks/usePedidos";
-import { fetchPedidosPage, resolverPedido, cancelarPedido } from "src/services/pedidosService";
+import PedidoList from "./PedidoList";
+import PedidoModal from "./PedidoModal";
+import ConfirmarPedidoModal from "./ConfirmarPedidoModal";
+import { addPedido, resolverPedido, cancelarPedido } from "src/services/pedidosService";
 import { toast } from "react-toastify";
 
 export default function PedidosPage() {
     const { pedidos, loading } = usePedidos();
-    const [lastDoc, setLastDoc] = useState<any>(null);
-    const [mais, setMais] = useState<any[]>([]);
+    const [isNewOpen, setIsNewOpen] = useState(false);
+    const [confirm, setConfirm] = useState<{ id: string; action: "resolvido" | "cancelado" } | null>(null);
 
-    const carregarMais = async () => {
+    const handleAdd = async (descricao: string) => {
         try {
-            const { lastDoc: next, data } = await fetchPedidosPage(lastDoc);
-            setMais(prev => [...prev, ...data]);
-            setLastDoc(next);
+            await addPedido(descricao);
+            toast.success("Pedido realizado!");
+            setIsNewOpen(false);
         } catch {
-            toast.error("Erro ao carregar mais pedidos");
+            toast.error("Erro ao realizar pedido");
         }
     };
 
-    if (loading) return <div>Carregando pedidos...</div>;
+    const handleConfirm = async () => {
+        if (!confirm) return;
+        try {
+            if (confirm.action === "resolvido") await resolverPedido(confirm.id);
+            else await cancelarPedido(confirm.id);
+            toast.success(`Pedido ${confirm.action === "resolvido" ? "resolvido" : "cancelado"}!`);
+            setConfirm(null);
+        } catch {
+            toast.error("Erro na ação do pedido");
+        }
+    };
 
-    const todos = [...pedidos, ...mais];
+    if (loading) return <div>Carregando pedidos…</div>;
 
     return (
         <div className="p-4">
-            <h1 className="text-2xl mb-4">Pedidos</h1>
-            <ul className="space-y-2">
-                {todos.map(pedido => (
-                    <li key={pedido.id} className="flex flex-col gap-2">
-                        <span>{pedido.descricao} — Status: {pedido.status}</span>
-                        {pedido.status === "aberto" && (
-                            <div className="flex gap-2">
-                                <button
-                                    onClick={() => resolverPedido(pedido.id).then(() => toast.success("Pedido resolvido")).catch(e => toast.error(e.message))}
-                                    className="bg-green-500 text-white px-2 py-1 rounded"
-                                >
-                                    Resolver
-                                </button>
-                                <button
-                                    onClick={() => cancelarPedido(pedido.id).then(() => toast.success("Pedido cancelado")).catch(e => toast.error(e.message))}
-                                    className="bg-red-500 text-white px-2 py-1 rounded"
-                                >
-                                    Cancelar
-                                </button>
-                            </div>
-                        )}
-                    </li>
-                ))}
-            </ul>
+            <div className="flex justify-between items-center mb-4">
+                <h1 className="text-2xl font-bold">Pedidos</h1>
+                <button
+                    onClick={() => setIsNewOpen(true)}
+                    className="bg-green-600 text-white px-4 py-2 rounded"
+                >
+                    Novo Pedido
+                </button>
+            </div>
 
-            <button onClick={carregarMais} className="mt-4 bg-blue-500 text-white px-4 py-2 rounded">
-                Carregar mais
-            </button>
+            <PedidoList
+                pedidos={pedidos}
+                onResolve={(id) => setConfirm({ id, action: "resolvido" })}
+                onCancel={(id) => setConfirm({ id, action: "cancelado" })}
+            />
+
+            {isNewOpen && <PedidoModal onClose={() => setIsNewOpen(false)} onSave={handleAdd} />}
+
+            {confirm && (
+                <ConfirmarPedidoModal
+                    action={confirm.action}
+                    onConfirm={handleConfirm}
+                    onCancel={() => setConfirm(null)}
+                />
+            )}
         </div>
     );
 }
