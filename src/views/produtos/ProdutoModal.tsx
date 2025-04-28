@@ -47,11 +47,32 @@ export default function ProdutoModal({ produto, onClose }: ProdutoModalProps) {
             <Modal.Header>{produto ? "Editar Produto" : "Novo Produto"}</Modal.Header>
             <Modal.Body>
                 <div className="flex flex-col gap-4">
-                    <TextInput placeholder="Título" value={titulo} onChange={(e) => setTitulo(e.target.value)} />
-                    <TextInput placeholder="Descrição" value={descricao} onChange={(e) => setDescricao(e.target.value)} />
-                    <TextInput placeholder="Quantidade" type="number" value={quantidade} onChange={(e) => setQuantidade(+e.target.value)} />
-                    <TextInput placeholder="Valor Bruto" type="number" value={valorBruto} onChange={(e) => setValorBruto(+e.target.value)} />
-                    <TextInput placeholder="Valor Final" type="number" value={valorFinal} onChange={(e) => setValorFinal(+e.target.value)} />
+
+                    <div>
+                        <Label htmlFor="titulo" value="Título" />
+                        <TextInput id="titulo" placeholder="Título do produto" value={titulo} onChange={(e) => setTitulo(e.target.value)} />
+                    </div>
+
+                    <div>
+                        <Label htmlFor="descricao" value="Descrição" />
+                        <TextInput id="descricao" placeholder="Descrição do produto" value={descricao} onChange={(e) => setDescricao(e.target.value)} />
+                    </div>
+
+                    <div>
+                        <Label htmlFor="quantidade" value="Quantidade em estoque" />
+                        <TextInput id="quantidade" type="number" placeholder="Quantidade" value={quantidade} onChange={(e) => setQuantidade(+e.target.value)} />
+                    </div>
+
+                    <div>
+                        <Label htmlFor="valorBruto" value="Valor Bruto (Custo)" />
+                        <TextInput id="valorBruto" type="number" placeholder="Valor Bruto" value={valorBruto} onChange={(e) => setValorBruto(+e.target.value)} />
+                    </div>
+
+                    <div>
+                        <Label htmlFor="valorFinal" value="Valor Final (Venda)" />
+                        <TextInput id="valorFinal" type="number" placeholder="Valor Final" value={valorFinal} onChange={(e) => setValorFinal(+e.target.value)} />
+                    </div>
+
                 </div>
             </Modal.Body>
             <Modal.Footer>
