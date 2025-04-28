@@ -96,6 +96,30 @@ const SidebarContent: MenuItem[] = [
       },
     ],
   },
+  // 🎯 Adição do ERP
+  {
+    heading: "ERP",
+    children: [
+      {
+        name: "Produtos",
+        icon: "solar:box-outline",
+        id: uniqueId(),
+        url: "/produtos",
+      },
+      {
+        name: "Serviços",
+        icon: "solar:settings-outline",
+        id: uniqueId(),
+        url: "/servicos",
+      },
+      {
+        name: "Pedidos",
+        icon: "solar:clipboard-text-outline",
+        id: uniqueId(),
+        url: "/pedidos",
+      },
+    ],
+  },
 ];
 
 export default SidebarContent;

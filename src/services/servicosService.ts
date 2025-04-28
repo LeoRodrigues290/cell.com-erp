@@ -4,35 +4,34 @@ import {
 } from "firebase/firestore";
 import { db, auth } from "../firebase/config";
 
-const col = collection(db, "produtos");
+const col = collection(db, "servicos");
 
 // Realtime listener
-export const onProdutosChange = (cb: (docs: any[]) => void) =>
+export const onServicosChange = (cb: (docs: any[]) => void) =>
     onSnapshot(col, snap => cb(snap.docs.map(d => ({ id: d.id, ...d.data() }))));
 
 // CRUD básico
-export const addProduto = (data: Omit<any, "criado_por"|"criado_nome">) =>
+export const addServico = (data: Omit<any, "criado_por"|"criado_nome">) =>
     addDoc(col, {
         ...data,
         criado_por: auth.currentUser!.uid,
         criado_nome: auth.currentUser!.displayName || "Usuário"
     });
 
-export const editProduto = (id: string, dados: any) =>
-    updateDoc(doc(db, "produtos", id), dados);
+export const editServico = (id: string, dados: any) =>
+    updateDoc(doc(db, "servicos", id), dados);
 
-// Vender produto com transação
-export const venderProduto = (id: string, qtd: number) =>
+// Marcar serviço como entregue usando transação
+export const finalizarServico = (id: string) =>
     runTransaction(db, async tx => {
-        const ref = doc(db, "produtos", id);
+        const ref = doc(db, "servicos", id);
         const snap = await tx.get(ref);
-        const atual = snap.data()?.quantidade ?? 0;
-        if (atual < qtd) throw new Error("Estoque insuficiente");
-        tx.update(ref, { quantidade: atual - qtd });
+        if (!snap.exists()) throw new Error("Serviço não encontrado");
+        tx.update(ref, { data_entrega: new Date() });
     });
 
 // Paginação
-export const fetchProdutosPage = async (last: any) => {
+export const fetchServicosPage = async (last: any) => {
     let q = query(col, limit(10));
     if (last) q = query(col, startAfter(last), limit(10));
     const snap = await getDocs(q);

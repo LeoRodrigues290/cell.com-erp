@@ -3,6 +3,7 @@
 import { lazy } from 'react';
 import { Navigate, createBrowserRouter } from 'react-router';
 import Loadable from 'src/layouts/full/shared/loadable/Loadable';
+import { PrivateRoute } from 'src/firebase/PrivateRoute';
 
 /* ***Layouts**** */
 const FullLayout = Loadable(lazy(() => import('../layouts/full/FullLayout')));
@@ -11,16 +12,17 @@ const BlankLayout = Loadable(lazy(() => import('../layouts/blank/BlankLayout')))
 // Dashboard
 const Dashboard = Loadable(lazy(() => import('../views/dashboards/Dashboard')));
 
-// utilities
+// Pages
+const Produtos = Loadable(lazy(() => import('../views/produtos')));
+const Servicos = Loadable(lazy(() => import('../views/servicos')));
+const Pedidos  = Loadable(lazy(() => import('../views/pedidos')));
 const Typography = Loadable(lazy(() => import('../views/typography/Typography')));
 const Table = Loadable(lazy(() => import('../views/tables/Table')));
 const Form = Loadable(lazy(() => import('../views/forms/Form')));
 const Shadow = Loadable(lazy(() => import('../views/shadows/Shadow')));
-
-// icons
 const Solar = Loadable(lazy(() => import('../views/icons/Solar')));
 
-// authentication
+// Authentication
 const Login = Loadable(lazy(() => import('../views/auth/login/Login')));
 const Register = Loadable(lazy(() => import('../views/auth/register/Register')));
 const SamplePage = Loadable(lazy(() => import('../views/sample-page/SamplePage')));
@@ -32,6 +34,9 @@ const Router = [
     element: <FullLayout />,
     children: [
       { path: '/', exact: true, element: <Dashboard /> },
+      { path: '/produtos', element: <PrivateRoute><Produtos /></PrivateRoute> },
+      { path: '/servicos', element: <PrivateRoute><Servicos /></PrivateRoute> },
+      { path: '/pedidos',  element: <PrivateRoute><Pedidos /></PrivateRoute> },
       { path: '/ui/typography', exact: true, element: <Typography /> },
       { path: '/ui/table', exact: true, element: <Table /> },
       { path: '/ui/form', exact: true, element: <Form /> },
