@@ -56,7 +56,7 @@ export default function ProductRevenue() {
   }, []);
 
   return (
-      <div className="rounded-xl shadow-md bg-white p-6 w-full">
+      <div className="bg-white rounded-xl shadow-md p-6 h-full">
         <h5 className="card-title mb-6">Produtos e Serviços mais vendidos</h5>
         <SimpleBar className="max-h-[450px]">
           <div className="overflow-x-auto space-y-8">

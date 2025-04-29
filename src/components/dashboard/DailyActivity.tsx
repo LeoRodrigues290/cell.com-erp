@@ -26,9 +26,9 @@ export default function DailyActivity() {
   }, []);
 
   return (
-      <div className="rounded-xl shadow-md bg-white p-6 w-full">
+      <div className="rounded-xl shadow-md bg-white p-6 w-full flex flex-col">
         <h5 className="card-title mb-6">Atividades Diárias</h5>
-        <ul className="flex flex-col space-y-4">
+        <ul className="flex flex-col space-y-4 overflow-y-auto" style={{ maxHeight: "400px" }}>
           {atividades.map((a) => {
             const dt = (a.timestamp as any).toDate();
             return (

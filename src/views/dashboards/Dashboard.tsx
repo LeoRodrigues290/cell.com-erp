@@ -7,32 +7,21 @@ import { RevenueForecast } from 'src/components/dashboard/RevenueForecast';
 import TotalIncome from 'src/components/dashboard/TotalIncome';
 
 const Dashboard = () => {
-  return (
-    <div className="grid grid-cols-12 gap-30">
-      <div className="lg:col-span-8 col-span-12">
+    return (
+        <div className="grid grid-cols-12 gap-30">
 
-      </div>
-      <div className="lg:col-span-4 col-span-12">
-        <div className="grid grid-cols-12 h-full items-stretch">
-          <div className="col-span-12 mb-30">
+            {/* Parte do meio que você quer ajustar */}
+            <div className="lg:col-span-8 col-span-12 flex flex-col h-full">
+                <ProductRevenue className="flex-1" />
+            </div>
 
-          </div>
-          <div className="col-span-12">
-            <TotalIncome />
-          </div>
+            <div className="lg:col-span-4 col-span-12 flex flex-col h-full space-y-4">
+                <TotalIncome />
+                <DailyActivity />
+            </div>
+
         </div>
-      </div>
-      <div className="lg:col-span-8 col-span-12">
-        <ProductRevenue />
-      </div>
-      <div className="lg:col-span-4 col-span-12 flex">
-        <DailyActivity />
-      </div>
-      <div className="col-span-12">
-        <BlogCards />
-      </div>
-    </div>
-  );
+    );
 };
 
 export default Dashboard;
