@@ -1,95 +1,116 @@
-// src/views/dashboard/TotalIncome.tsx
-import { useEffect, useState } from "react";
-import Chart from "react-apexcharts";
-import { Icon } from "@iconify/react";
-import { Badge } from "flowbite-react";
-import { collection, getDocs, query, where, Timestamp } from "firebase/firestore";
-import { db } from "src/firebase/config";
-import { startOfMonth, subMonths } from "date-fns";
+import React, { useEffect, useState } from 'react'
+import Chart      from 'react-apexcharts'
+import { Icon }   from '@iconify/react'
+import { Badge }  from 'flowbite-react'
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+  Timestamp
+} from 'firebase/firestore'
+import { db } from 'src/firebase/config'
+import { startOfMonth, subMonths } from 'date-fns'
 
 export default function TotalIncome() {
-  const [monthlyTotals, setMonthlyTotals] = useState<number[]>([]);
-  const [currentTotal, setCurrentTotal] = useState(0);
+  const [monthlyTotals, setMonthlyTotals] = useState<number[]>([])
+  const [currentTotal, setCurrentTotal]   = useState(0)
 
   useEffect(() => {
-    (async () => {
-      const data: number[] = [];
-      const now = new Date();
+    ;(async () => {
+      const results: number[] = []
+      const now = new Date()
+
       for (let i = 5; i >= 0; i--) {
-        const start = startOfMonth(subMonths(now, i));
-        const end   = startOfMonth(subMonths(now, i - 1));
+        const start = startOfMonth(subMonths(now, i))
+        const end   = startOfMonth(subMonths(now, i - 1))
+
         // vendas
         const vendasQ = query(
-            collection(db, "vendas"),
-            where("data_venda", ">=", Timestamp.fromDate(start)),
-            where("data_venda", "<",  Timestamp.fromDate(end))
-        );
-        const vs = await getDocs(vendasQ);
-        let sumV = 0;
-        vs.docs.forEach(d => sumV += d.data().total || 0);
+            collection(db, 'vendas'),
+            where('data_venda', '>=', Timestamp.fromDate(start)),
+            where('data_venda', '<',  Timestamp.fromDate(end))
+        )
+        const vs = await getDocs(vendasQ)
+        const sumV = vs.docs.reduce((acc, d) => acc + (d.data().total || 0), 0)
+
         // serviços
         const servQ = query(
-            collection(db, "servicos"),
-            where("finalizadoEm", ">=", Timestamp.fromDate(start)),
-            where("finalizadoEm", "<",  Timestamp.fromDate(end))
-        );
-        const ss = await getDocs(servQ);
-        let sumS = 0;
-        ss.docs.forEach(d => {
-          const s = d.data();
-          sumS += ((s.valor || 0) - (s.custo_materiais || 0));
-        });
-        const total = sumV + sumS;
-        data.push(total);
-        if (i === 0) setCurrentTotal(total);
+            collection(db, 'servicos'),
+            where('finalizadoEm', '>=', Timestamp.fromDate(start)),
+            where('finalizadoEm', '<',  Timestamp.fromDate(end))
+        )
+        const ss = await getDocs(servQ)
+        const sumS = ss.docs.reduce(
+            (acc, d) => acc + (((d.data().valor || 0) - (d.data().custo_materiais || 0))),
+            0
+        )
+
+        const total = sumV + sumS
+        results.push(total)
+        if (i === 0) setCurrentTotal(total)
       }
-      setMonthlyTotals(data);
-    })();
-  }, []);
+
+      setMonthlyTotals(results)
+    })()
+  }, [])
 
   const chartOptions = {
-    series: [{ name: "Ganhos", data: monthlyTotals }],
+    series: [{ name: 'Ganhos', data: monthlyTotals }],
     chart: {
-      id: "total-income",
-      type: "area",
-      height: 60,
+      id: 'total-income',
+      type: 'area',
       sparkline: { enabled: true },
-      fontFamily: "inherit",
-      foreColor: "#adb0bb",
+      foreColor: '#adb0bb',
     },
-    stroke: { curve: "smooth", width: 2 },
+    stroke: { curve: 'smooth', width: 2 },
     fill: {
-      type: "gradient",
-      gradient: { shadeIntensity: 0, inverseColors: false, opacityFrom: 0, opacityTo: 0 },
+      type: 'gradient',
+      gradient: { opacityFrom: 0.4, opacityTo: 0.1 },
     },
     markers: { size: 0 },
-    tooltip: {
-      theme: "dark",
-      fixed: { enabled: true, position: "right" },
-      x: { show: false },
-    },
-  };
+    tooltip: { theme: 'dark', x: { show: false } },
+  }
 
   return (
-      <div className="bg-white rounded-xl shadow-md p-8">
-        <div className="flex items-center gap-4 mb-8">
-          <div className="bg-lighterror text-error p-3 rounded-md">
-            <Icon icon="solar:cash-linear" height={24} />
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="p-3 bg-blue-100 dark:bg-blue-900 rounded-full">
+            <Icon
+                icon="solar:cash-linear-bold"
+                width={24}
+                className="text-blue-600 dark:text-blue-200"
+            />
           </div>
-          <p className="text-lg font-semibold text-dark">Total de Entradas</p>
+          <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
+            Total de Entradas
+          </h3>
         </div>
-        <div className="flex">
+
+        <div className="flex items-center">
           <div className="flex-1">
-            <p className="text-xl text-dark font-medium mb-2">
-              R$ {currentTotal.toFixed(2).replace(".", ",")}
+            <p className="text-2xl font-bold text-gray-900 dark:text-white">
+              R$ {currentTotal.toFixed(2).replace('.', ',')}
             </p>
-            <Badge className="bg-lightsuccess text-success">
+            <Badge
+                color={
+                  currentTotal >= (monthlyTotals[monthlyTotals.length - 2] || 0)
+                      ? 'success'
+                      : 'warning'
+                }
+                className="mt-1"
+            >
               {monthlyTotals.length
-                  ? ((currentTotal / Math.max(1, monthlyTotals[monthlyTotals.length - 2])) * 100 - 100).toFixed(1) + "%"
-                  : "+0%"}
+                  ? (
+                      ((currentTotal - monthlyTotals[monthlyTotals.length - 2]) /
+                          (monthlyTotals[monthlyTotals.length - 2] || 1) *
+                          100
+                      ).toFixed(1) + '%'
+                  )
+                  : '+0%'}
             </Badge>
           </div>
-          <div className="rounded-bars flex-1 md:ps-7">
+          <div className="w-32 h-16">
             <Chart
                 options={chartOptions}
                 series={chartOptions.series}
@@ -100,5 +121,5 @@ export default function TotalIncome() {
           </div>
         </div>
       </div>
-  );
+  )
 }

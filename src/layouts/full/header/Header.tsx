@@ -1,89 +1,73 @@
-import {useState, useEffect} from "react";
-import {Button, Navbar} from "flowbite-react";
-import {Icon} from "@iconify/react";
-import Profile from "./Profile";
-import Notification from "./notification";
-import {Drawer} from "flowbite-react";
-import MobileSidebar from "../sidebar/MobileSidebar";
-import {useDarkMode} from 'src/hooks/useDarkMode'
+// src/layouts/full/header/Header.tsx
+import React, { useState, useEffect } from 'react'
+import { Navbar, Drawer } from 'flowbite-react'
+import { Icon } from '@iconify/react'
 import Search from 'src/components/shared/Search'
+import Notification from './notification'
+import Profile from './Profile'
+import MobileSidebar from '../sidebar/MobileSidebar'
+import { useTheme } from 'src/contexts/DarkModeContext'
 
-
-const Header = () => {
-    const [isSticky, setIsSticky] = useState(false);
-    const [theme, setTheme] = useDarkMode();
+const Header: React.FC = () => {
+    const [isSticky, setIsSticky] = useState(false)
+    const { theme, setTheme }     = useTheme()
+    const [open, setOpen]         = useState(false)
 
     useEffect(() => {
-        const handleScroll = () => {
-            if (window.scrollY > 50) {
-                setIsSticky(true);
-            } else {
-                setIsSticky(false);
-            }
-        };
+        const onScroll = () => setIsSticky(window.scrollY > 50)
+        window.addEventListener('scroll', onScroll)
+        return () => window.removeEventListener('scroll', onScroll)
+    }, [])
 
-        window.addEventListener("scroll", handleScroll);
-
-        return () => {
-            window.removeEventListener("scroll", handleScroll);
-        };
-    }, []);
-
-    // mobile-sidebar
-    const [isOpen, setIsOpen] = useState(false);
-    const handleClose = () => setIsOpen(false);
     return (
         <>
             <header
-                className={`sticky top-0 z-[5] ${isSticky
-                    ? "bg-white dark:bg-dark fixed w-full"
-                    : "bg-white"
-                }`}
+                className={`
+          sticky top-0 z-50 transition-colors
+          ${isSticky ? 'bg-white dark:bg-gray-900 shadow-md' : 'bg-transparent'}
+        `}
             >
-                <Navbar
-                    fluid
-                    className={`rounded-none bg-transparent dark:bg-transparent py-4 sm:px-30 px-4`}
-                >
-                    {/* Mobile Toggle Icon */}
+                <Navbar fluid className="px-6 py-3">
+                    <div className="flex items-center w-full">
+                        {/* botão mobile */}
+                        <button
+                            onClick={() => setOpen(true)}
+                            className="p-2 mr-4 text-gray-700 dark:text-gray-300 md:hidden rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+                        >
+                            <Icon icon="mdi:menu" width={24} />
+                        </button>
 
-                    <div className="flex gap-3 items-center justify-between w-full ">
-                        <div className="flex gap-2 items-center">
-              <span
-                  onClick={() => setIsOpen(true)}
-                  className="h-10 w-10 flex text-black dark:text-white text-opacity-65 xl:hidden hover:text-primary hover:bg-lightprimary rounded-full justify-center items-center cursor-pointer"
-              >
-                <Icon icon="solar:hamburger-menu-line-duotone" height={21}/>
-              </span>
-                            {/*<Notification />*/}
-                        </div>
+                        {/* busca */}
+                        <div className="flex-1"><Search /></div>
 
-                        <div className="flex flex-1 justify-center md:justify-start">
-                            <Search/>
-                        </div>
+                        {/* notificações, tema, perfil */}
+                        <div className="flex items-center space-x-4">
+                            <Notification />
 
-                        <div className="flex gap-4 items-center">
-                            <div className="flex justify-end p-4">
-                                <button
-                                    onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                                    className="flex items-center gap-2 px-4 py-2 rounded bg-gray-200 dark:bg-gray-700 text-black dark:text-white shadow hover:opacity-90 transition"
-                                >
-                                    {theme === 'dark' ? '🌞 Claro' : '🌙 Escuro'}
-                                </button>
-                            </div>
-                            <Profile/>
+                            <button
+                                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                                className="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:opacity-90 transition"
+                                aria-label="Toggle dark mode"
+                            >
+                                {theme === 'dark'
+                                    ? <Icon icon="mdi:white-balance-sunny" width={20} />
+                                    : <Icon icon="mdi:weather-night"    width={20} />
+                                }
+                            </button>
+
+                            <Profile />
                         </div>
                     </div>
                 </Navbar>
             </header>
 
-            {/* Mobile Sidebar */}
-            <Drawer open={isOpen} onClose={handleClose} className="w-130">
+            <Drawer open={open} onClose={() => setOpen(false)} className="w-64">
                 <Drawer.Items>
-                    <MobileSidebar/>
+                    <MobileSidebar />
                 </Drawer.Items>
             </Drawer>
         </>
-    );
-};
+    )
+}
 
-export default Header;
+export default Header

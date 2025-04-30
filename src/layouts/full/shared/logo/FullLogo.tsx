@@ -1,14 +1,18 @@
 // src/layouts/full/shared/logo/FullLogo.tsx
-import Logo from '/src/assets/images/logos/logo.svg'
-import { Link } from 'react-router-dom'
+import React from 'react'
+import { Link }        from 'react-router-dom'
+import lightLogo       from 'src/assets/images/logos/logo.svg'
+import darkLogo        from 'src/assets/images/logos/logo-white.svg'
+import { useTheme }    from 'src/contexts/DarkModeContext'
 
-const FullLogo = () => {
+const FullLogo: React.FC = () => {
+    const { theme } = useTheme()
     return (
         <Link to="/" className="block">
             <img
-                src={Logo}
+                src={theme === 'dark' ? darkLogo : lightLogo}
                 alt="CellCom Logo"
-                className="block w-48 h-auto"  // define largura fixa (32 = 8rem = 128px) e altura automática
+                className="w-40 h-auto"
             />
         </Link>
     )
