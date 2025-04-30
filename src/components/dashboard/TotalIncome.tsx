@@ -48,7 +48,7 @@ export default function TotalIncome() {
   }, []);
 
   const chartOptions = {
-    series: [{ name: "Earnings", data: monthlyTotals }],
+    series: [{ name: "Ganhos", data: monthlyTotals }],
     chart: {
       id: "total-income",
       type: "area",
