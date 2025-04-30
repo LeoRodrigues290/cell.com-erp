@@ -42,9 +42,7 @@ const Header: React.FC = () => {
 
                         {/* notificações, tema, perfil */}
                         <div className="flex items-center space-x-4">
-                            <Notification />
-
-                            <button
+                                                        <button
                                 onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
                                 className="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:opacity-90 transition"
                                 aria-label="Toggle dark mode"

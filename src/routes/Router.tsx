@@ -14,6 +14,7 @@ const Dashboard  = Loadable(lazy(() => import('src/views/dashboards/Dashboard'))
 const Produtos      = Loadable(lazy(() => import('src/views/produtos')))
 const Servicos      = Loadable(lazy(() => import('src/views/servicos')))
 const Pedidos       = Loadable(lazy(() => import('src/views/pedidos')))
+const Lembretes     = Loadable(lazy(() => import('src/views/lembretes')))
 const SearchResults = Loadable(lazy(() => import('src/views/search/SearchResults')))
 const Typography    = Loadable(lazy(() => import('src/views/typography/Typography')))
 const Table         = Loadable(lazy(() => import('src/views/tables/Table')))
@@ -36,6 +37,7 @@ const routes = [
       { path: 'produtos',     element: <PrivateRoute><Produtos/></PrivateRoute> },
       { path: 'servicos',     element: <PrivateRoute><Servicos/></PrivateRoute> },
       { path: 'pedidos',      element: <PrivateRoute><Pedidos/></PrivateRoute> },
+      { path: 'lembretes',    element: <PrivateRoute><Lembretes/></PrivateRoute> },
       { path: 'search',       element: <PrivateRoute><SearchResults/></PrivateRoute> },
       { path: 'ui/typography',element: <Typography/> },
       { path: 'ui/table',     element: <Table/> },

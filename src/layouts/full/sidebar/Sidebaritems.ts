@@ -37,6 +37,12 @@ const SidebarContent: MenuItem[] = [
     heading: "MENU",
     children: [
       {
+        name: "Lembretes",
+        icon: "solar:bell-outline",
+        id: uniqueId(),
+        url: "/lembretes",
+      },
+      {
         name: "Produtos",
         icon: "solar:box-outline",
         id: uniqueId(),
