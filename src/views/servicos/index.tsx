@@ -23,7 +23,7 @@ export default function ServicosPage() {
                 toast.success("Serviço criado!");
             }
             setModalServico(null);
-        } catch (error) {
+        } catch {
             toast.error("Erro ao salvar serviço.");
         }
     };
@@ -34,21 +34,27 @@ export default function ServicosPage() {
             await finalizarServico(confirmarFinalizacao.id);
             toast.success("Serviço finalizado!");
             setConfirmarFinalizacao(null);
-        } catch (error) {
+        } catch {
             toast.error("Erro ao finalizar serviço.");
         }
     };
 
-    if (loading) return <div>Carregando serviços...</div>;
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center h-64">
+                <span className="text-gray-500 dark:text-gray-400">Carregando serviços…</span>
+            </div>
+        );
+    }
 
     return (
-        <div className="p-4">
+        <div className="p-6 space-y-6">
             <ServicoList
                 servicos={servicos}
                 onNovo={() => setModalServico({})}
-                onEditar={servico => setModalServico(servico)}
-                onDetalhes={servico => setModalDetalhe(servico)}
-                onFinalizar={servico => setConfirmarFinalizacao(servico)}
+                onEditar={(s) => setModalServico(s)}
+                onDetalhes={(s) => setModalDetalhe(s)}
+                onFinalizar={(s) => setConfirmarFinalizacao(s)}
             />
 
             {modalServico && (

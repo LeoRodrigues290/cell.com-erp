@@ -40,7 +40,6 @@ const MobileSidebar = () => {
               </Sidebar.ItemGroup>
             </Sidebar.Items>
           </SimpleBar>
-          <Upgrade/>
         </Sidebar>
       </div>
     </>
