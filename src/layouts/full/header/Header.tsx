@@ -6,11 +6,12 @@ import Profile from "./Profile";
 import Notification from "./notification";
 import { Drawer } from "flowbite-react";
 import MobileSidebar from "../sidebar/MobileSidebar";
-import { Link } from "react-router";
+import { useDarkMode } from 'src/hooks/useDarkMode'
 
 
 const Header = () => {
   const [isSticky, setIsSticky] = useState(false);
+  const [theme, setTheme] = useDarkMode();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -57,6 +58,14 @@ const Header = () => {
             </div>
 
             <div className="flex gap-4 items-center">
+              <div className="flex justify-end p-4">
+                <button
+                    onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                    className="flex items-center gap-2 px-4 py-2 rounded bg-gray-200 dark:bg-gray-700 text-black dark:text-white shadow hover:opacity-90 transition"
+                >
+                  {theme === 'dark' ? '🌞 Claro' : '🌙 Escuro'}
+                </button>
+              </div>
               <Profile />
             </div>
           </div>
