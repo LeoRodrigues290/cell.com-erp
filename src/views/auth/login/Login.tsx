@@ -1,33 +1,46 @@
-import FullLogo from "src/layouts/full/shared/logo/FullLogo";
-import AuthLogin from "../authforms/AuthLogin";
-import { Link } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+// src/views/auth/login/Login.tsx
+import React from 'react'
+import { Link } from 'react-router-dom'
+import FullLogo from 'src/layouts/full/shared/logo/FullLogo'
+import AuthLogin from '../authforms/AuthLogin'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import Logo from "src/assets/images/logos/logo-white.svg";
 
-const gradientStyle = {
-  background: "linear-gradient(45deg, rgba(238, 119, 82, 0.2), rgba(231, 60, 126, 0.2), rgba(35, 166, 213, 0.2), rgba(35, 213, 171, 0.2))",
-  backgroundSize: "400% 400%",
-  animation: "gradient 15s ease infinite",
-  height: "100vh",
-};
+const gradientStyle: React.CSSProperties = {
+    background: 'linear-gradient(135deg, #0803f5 0%, #e25108 50%, #2d3674 100%)',
+}
 
-const Login = () => {
-  return (
-      <div style={gradientStyle} className="relative overflow-hidden h-screen">
-        <ToastContainer position="top-right" />
-        <div className="flex h-full justify-center items-center px-4">
-          <div className="rounded-xl shadow-md bg-white dark:bg-darkgray p-6 w-full md:w-96 border-none">
-            <div className="flex flex-col gap-2 p-0 w-full">
-              <div className="mx-auto">
-                <FullLogo />
-              </div>
-              <p className="text-sm text-center text-dark my-3">Acessar o Painel Cell.Com</p>
-              <AuthLogin />
+export default function Login() {
+    return (
+        <div className="flex h-screen">
+
+            <div
+                className="w-full md:w-1/2 h-full flex justify-center items-center p-6"
+                style={gradientStyle}
+            >
+                <div className="relative bg-gray-900 p-8 rounded-xl shadow-lg w-full max-w-md space-y-6">
+                    <ToastContainer position="top-right" />
+
+                    <div className="flex flex-col items-center">
+                        <img
+                            src={Logo}
+                            alt="CellCom Logo"
+                            className="block w-64 h-auto"
+                        />
+                        <h2 className="mt-4 text-2xl font-bold text-white">
+                            Acessar Painel
+                        </h2>
+                    </div>
+
+                    <AuthLogin />
+                </div>
             </div>
-          </div>
-        </div>
-      </div>
-  );
-};
 
-export default Login;
+            <div
+                className="hidden md:block md:w-1/2 bg-cover bg-black bg-center"
+                style={{ backgroundImage: "url('/assets/your-image.jpg')" }}
+            />
+        </div>
+    )
+}
