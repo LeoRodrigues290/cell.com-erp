@@ -1,11 +1,10 @@
 // src/views/auth/login/Login.tsx
 import React from 'react'
-import { Link } from 'react-router-dom'
-import FullLogo from 'src/layouts/full/shared/logo/FullLogo'
 import AuthLogin from '../authforms/AuthLogin'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import Logo from "src/assets/images/logos/logo-white.svg";
+import bgImage from "src/assets/images/backgrounds/login-phone-background.jpg"
 
 const gradientStyle: React.CSSProperties = {
     background: 'linear-gradient(135deg, #0803f5 0%, #e25108 50%, #2d3674 100%)',
@@ -39,7 +38,7 @@ export default function Login() {
 
             <div
                 className="hidden md:block md:w-1/2 bg-cover bg-black bg-center"
-                style={{ backgroundImage: "url('/assets/your-image.jpg')" }}
+                style={{ backgroundImage: `url(${bgImage})` }}
             />
         </div>
     )

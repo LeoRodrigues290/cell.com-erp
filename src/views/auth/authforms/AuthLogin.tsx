@@ -35,13 +35,13 @@ const AuthLogin = () => {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* E-mail */}
         <div>
-          <Label htmlFor="email" value="E-mail" className="mb-1" />
+          <Label htmlFor="email" value="E-mail" className="text-gray-300" />
           <TextInput
               id="email"
               type="email"
               sizing="md"
               required
-              className="rounded-xl"
+              className="rounded-xl mt-2"
               {...register('email')}
           />
           {formState.errors.email && (
@@ -53,13 +53,13 @@ const AuthLogin = () => {
 
         {/* Senha */}
         <div>
-          <Label htmlFor="password" value="Senha" className="mb-1" />
+          <Label htmlFor="password" value="Senha" className="text-gray-300" />
           <TextInput
               id="password"
               type="password"
               sizing="md"
               required
-              className="rounded-xl"
+              className="rounded-xl mt-2"
               {...register('password')}
           />
           {formState.errors.password && (
@@ -72,7 +72,7 @@ const AuthLogin = () => {
         {/* Lembrar dispositivo */}
         <div className="flex items-center">
           <Checkbox id="remember" />
-          <Label htmlFor="remember" className="ml-2 font-normal text-gray-700 dark:text-gray-300 cursor-pointer">
+          <Label htmlFor="remember" className="ml-2 font-normal text-gray-400 dark:text-gray-300 cursor-pointer">
             Lembrar dispositivo
           </Label>
         </div>
