@@ -1,4 +1,3 @@
-// src/views/servicos/ServicoModal.tsx
 import React, { FC, useState } from 'react'
 import { Modal, Button, Label, TextInput, Select } from 'flowbite-react'
 import { auth } from 'src/firebase/config'
@@ -24,7 +23,6 @@ const ServicoModal: FC<ServicoModalProps> = ({ servico, onClose, onSalvar }) => 
     const [status, setStatus] = useState<string>(servico?.status || 'aberto')
 
     const handleSubmit = () => {
-        // converte a data de entrega de string yyyy-MM-dd para Date
         let dataEntregaLocal: Date | null = null
         if (dataEntrega) {
             const [y, m, d] = dataEntrega.split('-').map(Number)
@@ -38,7 +36,7 @@ const ServicoModal: FC<ServicoModalProps> = ({ servico, onClose, onSalvar }) => 
             telefone_cliente: telefoneCliente,
             valor,
             custo_materiais: custoMateriais,
-            status,                             // ← aqui incluímos o status selecionado
+            status,
             criado_por: auth.currentUser?.uid,
             criado_nome: auth.currentUser?.displayName || 'Usuário',
             data_entrada: servico?.data_entrada || new Date(),
@@ -55,7 +53,7 @@ const ServicoModal: FC<ServicoModalProps> = ({ servico, onClose, onSalvar }) => 
                 {servico?.id ? 'Editar Serviço' : 'Novo Serviço'}
             </Modal.Header>
             <Modal.Body>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-4">
                         <div>
                             <Label htmlFor="titulo" value="Título" />
@@ -64,6 +62,7 @@ const ServicoModal: FC<ServicoModalProps> = ({ servico, onClose, onSalvar }) => 
                                 value={titulo}
                                 onChange={e => setTitulo(e.target.value)}
                                 required
+                                className="w-full"
                             />
                         </div>
                         <div>
@@ -72,6 +71,7 @@ const ServicoModal: FC<ServicoModalProps> = ({ servico, onClose, onSalvar }) => 
                                 id="descricao"
                                 value={descricao}
                                 onChange={e => setDescricao(e.target.value)}
+                                className="w-full"
                             />
                         </div>
                         <div>
@@ -80,6 +80,7 @@ const ServicoModal: FC<ServicoModalProps> = ({ servico, onClose, onSalvar }) => 
                                 id="nomeCliente"
                                 value={nomeCliente}
                                 onChange={e => setNomeCliente(e.target.value)}
+                                className="w-full"
                             />
                         </div>
                         <div>
@@ -90,6 +91,7 @@ const ServicoModal: FC<ServicoModalProps> = ({ servico, onClose, onSalvar }) => 
                                 placeholder="(xx) xxxxx-xxxx"
                                 value={telefoneCliente}
                                 onChange={e => setTelefoneCliente(e.target.value)}
+                                className="w-full"
                             />
                         </div>
                     </div>
@@ -102,6 +104,7 @@ const ServicoModal: FC<ServicoModalProps> = ({ servico, onClose, onSalvar }) => 
                                 type="number"
                                 value={valor}
                                 onChange={e => setValor(+e.target.value)}
+                                className="w-full"
                             />
                         </div>
                         <div>
@@ -111,6 +114,7 @@ const ServicoModal: FC<ServicoModalProps> = ({ servico, onClose, onSalvar }) => 
                                 type="number"
                                 value={custoMateriais}
                                 onChange={e => setCustoMateriais(+e.target.value)}
+                                className="w-full"
                             />
                         </div>
                         <div>
@@ -120,6 +124,7 @@ const ServicoModal: FC<ServicoModalProps> = ({ servico, onClose, onSalvar }) => 
                                 type="date"
                                 value={dataEntrega}
                                 onChange={e => setDataEntrega(e.target.value)}
+                                className="w-full"
                             />
                         </div>
                         <div>
@@ -128,9 +133,10 @@ const ServicoModal: FC<ServicoModalProps> = ({ servico, onClose, onSalvar }) => 
                                 id="status"
                                 value={status}
                                 onChange={e => setStatus(e.target.value)}
+                                className="w-full"
                             >
                                 <option value="aberto">Aberto</option>
-                                <option value="andamento">Andamento</option>
+                                <option value="em_andamento">Em Andamento</option>
                                 <option value="finalizado">Finalizado</option>
                             </Select>
                         </div>
